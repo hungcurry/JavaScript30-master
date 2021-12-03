@@ -1,0 +1,30 @@
+{
+"env": {
+	"browser": true,
+	"es2021": true,
+	"node": true
+},
+"extends": "eslint:recommended",
+"parserOptions": {
+	"ecmaVersion": 12,
+	"sourceType": "module"
+},
+"rules": {
+	"indent": [
+		"error",
+		2
+	],
+	"quotes": [
+		"error",
+		"single"
+	],
+	"semi": [
+		"error",
+		"never"
+	],
+	// 禁止出現未使用過的變數
+	"no-unused-vars" : ["off"],
+	// 統一系統空行規格
+	"linebreak-style": ["off"]
+	}
+}
