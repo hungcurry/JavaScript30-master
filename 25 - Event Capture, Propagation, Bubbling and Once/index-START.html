@@ -1,25 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <title>Understanding JavaScript's Capture</title>
 </head>
-<body class="bod">
-
-  <div class="one">
-    <div class="two">
-      <div class="three">
-      </div>
-    </div>
-  </div>
-
 <style>
   html {
     box-sizing: border-box;
   }
-  
-  *, *:before, *:after { 
-    box-sizing: inherit; 
+
+  *,
+  *:before,
+  *:after {
+    box-sizing: inherit;
   }
 
   div {
@@ -38,11 +32,122 @@
   .three {
     background: coral;
   }
+
+  ul {
+    border: 1px solid black;
+    padding: 10px;
+  }
+
+  li {
+    border: 1px solid blue;
+    padding: 10px;
+  }
+
+  a {
+    border: 1px solid green;
+    padding: 10px;
+  }
 </style>
 
-<button></button>
-<script>
+<body class="bod">
+  <button>Button</button>
+  <div class="one">
+    <div class="two">
+      <div class="three"></div>
+    </div>
+  </div>
+  <br />
+  <br />
+  <br />
+  <br />
+  <br />
+  <br />
+  <br />
+  <br />
+  <br />
+  <br />
+  <br />
+  <br />
+  <br />
+  <br />
+  <br />
+  <br />
+  <br />
+  <br />
+  <br />
+  <br />
+  <br />
+  <br />
+  <br />
+  <br />
+  <br />
+  <br />
+  <br />
+  <br />
+  <br />
+  <br />
+  <br />
+  <br />
+  <br />
+  <br />
+  <br />
+  <ul>
+    <li><a href="#" class="button">Button1</a></li>
+    <li><a href="#" class="button">Button2</a></li>
+    <li><a href="#" class="button">Button3</a></li>
+  </ul>
 
-</script>
+  <script>
+    let button = document.querySelector("button");
+    button.addEventListener("click", buttonHandler, { capture: false, once: false });
+    function buttonHandler() {
+      console.log("Button Click");
+    }
+
+
+    let divs = document.querySelectorAll("div");
+    divs.forEach(dom => {
+      dom.addEventListener("click", divHandler, { capture: true });
+    });
+    function divHandler(e) {
+      e.stopPropagation();
+      console.log(e.path);
+      console.log(this.className);
+    }
+
+
+
+    let as = document.querySelectorAll("a");
+    as.forEach(dom => { 
+      dom.addEventListener("click", aHandler, { 
+        capture: false, 
+        passive: false 
+      });
+    });
+    function aHandler(e) {
+      e.preventDefault();
+      console.log("Binding A Click:", this);
+    }
+
+
+    let ul = document.querySelector("ul");
+    ul.addEventListener("click", ulHandler);
+    function ulHandler(e) {
+      // 找DOM 第一種方法
+      if (e.target.nodeName === "A"){
+        e.preventDefault();
+        console.log("Delegate A Click:", e.target);
+      }
+      // 找DOM 第二種方法
+      console.log(e.target.classList.contains("button"));
+
+      // 找DOM 第三種方法
+      console.log(e.path.find(dom => {
+          return dom.classList && dom.classList.contains("button");
+        })
+      );
+    }
+  </script>
 </body>
+
 </html>
