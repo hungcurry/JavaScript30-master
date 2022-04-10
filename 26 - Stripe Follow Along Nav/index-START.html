@@ -4,76 +4,6 @@
   <meta charset="UTF-8">
   <title>Follow Along Nav</title>
 </head>
-<body>
-  <h2>Cool</h2>
-  <nav class="top">
-    <div class="dropdownBackground">
-      <span class="arrow"></span>
-    </div>
-
-    <ul class="cool">
-      <li>
-        <a href="#">About Me</a>
-        <div class="dropdown dropdown1">
-          <div class="bio">
-            <img src="https://logo.clearbit.com/wesbos.com">
-            <p>Wes Bos sure does love web development. He teaches things like JavaScript, CSS and BBQ. Wait. BBQ isn't part of web development. It should be though!</p>
-          </div>
-        </div>
-      </li>
-      <li>
-        <a href="#">Courses</a>
-        <ul class="dropdown courses">
-          <li>
-            <span class="code">RFB</span>
-            <a href="https://ReactForBeginners.com">React For Beginners</a>
-          </li>
-          <li>
-            <span class="code">ES6</span>
-            <a href="https://ES6.io">ES6 For Everyone</a>
-          </li>
-          <li>
-            <span class="code">NODE</span>
-            <a href="https://LearnNode.com">Learn Node</a>
-          </li>
-          <li>
-            <span class="code">STPU</span>
-            <a href="https://SublimeTextBook.com">Sublime Text Power User</a>
-          </li>
-          <li>
-            <span class="code">WTF</span>
-            <a href="http://Flexbox.io">What The Flexbox?!</a>
-          </li>
-          <li>
-            <span class="code">GRID</span>
-            <a href="https://CSSGrid.io">CSS Grid</a>
-          </li>
-          <li>
-            <span class="code">LRX</span>
-            <a href="http://LearnRedux.com">Learn Redux</a>
-          </li>
-          <li>
-            <span class="code">CLPU</span>
-            <a href="http://CommandLinePowerUser.com">Command Line Power User</a>
-          </li>
-          <li>
-            <span class="code">MMD</span>
-            <a href="http://MasteringMarkdown.com">Mastering Markdown</a>
-          </li>
-        </ul>
-      </li>
-      <li>
-        <a href="#">Other Links</a>
-        <ul class="dropdown dropdown3">
-          <li><a class="button" href="http://twitter.com/wesbos">Twitter</a></li>
-          <li><a class="button" href="http://facebook.com/wesbos.developer">Facebook</a></li>
-          <li><a class="button" href="http://wesbos.com">Blog</a></li>
-          <li><a class="button" href="http://wesbos.com/courses">Course Catalog</a></li>
-        </ul>
-      </li>
-    </ul>
-  </nav>
-
 <style>
   html {
     box-sizing: border-box;
@@ -82,6 +12,7 @@
   
   *, *:before, *:after {
     box-sizing: inherit;
+    outline: 1px solid red;
   }
   
   body {
@@ -218,9 +149,126 @@
   .button[href*=facebook] { background: #3B5998; }
   .button[href*=courses] { background: #ffc600; }
 </style>
+<body>
+  <h2>Cool</h2>
+  <nav class="top">
+    <div class="dropdownBackground">
+      <span class="arrow"></span>
+    </div>
 
+    <ul class="cool">
+      <li>
+        <a href="#">About Me</a>
+        <div class="dropdown dropdown1">
+          <div class="bio">
+            <img src="https://logo.clearbit.com/wesbos.com">
+            <p>Wes Bos sure does love web development. He teaches things like JavaScript, CSS and BBQ. Wait. BBQ isn't part of web development. It should be though!</p>
+          </div>
+        </div>
+      </li>
+      <li>
+        <a href="#">Courses</a>
+        <ul class="dropdown courses">
+          <li>
+            <span class="code">RFB</span>
+            <a href="https://ReactForBeginners.com">React For Beginners</a>
+          </li>
+          <li>
+            <span class="code">ES6</span>
+            <a href="https://ES6.io">ES6 For Everyone</a>
+          </li>
+          <li>
+            <span class="code">NODE</span>
+            <a href="https://LearnNode.com">Learn Node</a>
+          </li>
+          <li>
+            <span class="code">STPU</span>
+            <a href="https://SublimeTextBook.com">Sublime Text Power User</a>
+          </li>
+          <li>
+            <span class="code">WTF</span>
+            <a href="http://Flexbox.io">What The Flexbox?!</a>
+          </li>
+          <li>
+            <span class="code">GRID</span>
+            <a href="https://CSSGrid.io">CSS Grid</a>
+          </li>
+          <li>
+            <span class="code">LRX</span>
+            <a href="http://LearnRedux.com">Learn Redux</a>
+          </li>
+          <li>
+            <span class="code">CLPU</span>
+            <a href="http://CommandLinePowerUser.com">Command Line Power User</a>
+          </li>
+          <li>
+            <span class="code">MMD</span>
+            <a href="http://MasteringMarkdown.com">Mastering Markdown</a>
+          </li>
+        </ul>
+      </li>
+      <li>
+        <a href="#">Other Links</a>
+        <ul class="dropdown dropdown3">
+          <li><a class="button" href="http://twitter.com/wesbos">Twitter</a></li>
+          <li><a class="button" href="http://facebook.com/wesbos.developer">Facebook</a></li>
+          <li><a class="button" href="http://wesbos.com">Blog</a></li>
+          <li><a class="button" href="http://wesbos.com/courses">Course Catalog</a></li>
+        </ul>
+      </li>
+    </ul>
+  </nav>
 <script>
-</script>
+  const ul =  document.querySelector('.cool');
+  const menus =  document.querySelectorAll('.cool > li');
+  const dropdownBackground = document.querySelector('.dropdownBackground');
+  function enterHandler(){
+    // 選取到的li 子層
+    const dropdown = this.querySelector('.dropdown');
 
+    // 先讓dropdown block 取得相對座標
+    this.classList.add('trigger-enter');
+    const rect = dropdown.getBoundingClientRect();
+
+    // 取得nav 然後減去top / left 位置才會正確
+    const navTop = document.querySelector('.top').getBoundingClientRect();
+    dropdownBackground.classList.add('open');
+    dropdownBackground.style.width = rect.width + 'px';
+    dropdownBackground.style.height = rect.height + 'px';
+    dropdownBackground.style.top = ( rect.top - navTop.top ) + 'px';
+    dropdownBackground.style.left = ( rect.left - navTop.left )  + 'px';
+
+    // 文字延遲出現
+    setTimeout(() => {
+      this.classList.contains('trigger-enter') && this.classList.add('trigger-enter-active')
+    }, 100);
+
+  };
+  function leaveHandler(){
+    this.classList.remove('trigger-enter');
+    dropdownBackground.classList.remove('open');
+    this.classList.remove('trigger-enter-active');
+  };
+
+  menus.forEach((menu)=>{
+    menu.addEventListener('mouseenter', enterHandler);
+    menu.addEventListener('mouseleave', leaveHandler);
+  });
+
+
+  // 事件委派Delegate 可以後續新增 或刪除按鈕 
+  // 但必須要用over / out系列 有氣泡事件 才可以點擊到 深層內的Targe
+  // 未完成 有BUG
+  // ul.addEventListener('mouseover', overHandler);
+  // ul.addEventListener('mouseout', outHandler);
+  // function overHandler(){
+  //   console.log(`over`);
+  // };
+  // function outHandler(){
+  //   console.log(`out`);
+  // };
+
+
+</script>
 </body>
 </html>
