@@ -6,8 +6,11 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
+    <!-- 全域 -->
+    <span class="highlight"></span>
     <nav>
+      <!--  區域  -->
+      <!-- <span class="highlight"></span> -->
       <ul class="menu">
         <li><a href="">Home</a></li>
         <li><a href="">Order Status</a></li>
@@ -26,8 +29,46 @@
     </div>
 
   <script>
-    // 👀👀👀👀👀👀👀👀👀👀👀👀👀👀👀
+    (function(){
+      // getBoundingClientRect 整個畫面的相對位置 , 如果有卷軸滾動 坐標可能會變動
+      // 區域 用offset系列會比較精準
+
+      let elTarget = null;
+      // 全域
+      const target = document.querySelectorAll("a");
+      // 區域
+      // const target = document.querySelectorAll(".menu a");
+      const highlight = document.querySelector('.highlight');
+      highlight.style.display = 'none';
+      function enterHandler(){
+        elTarget = this;
+        setPosition();
+      };
+      function resizeHandler(){
+        // 如果不存在元素,則不做事
+        if (!elTarget) return; 
+        setPosition();
+      };
+      function setPosition(){
+        const rect = elTarget.getBoundingClientRect();
+        highlight.style.display = 'block';
+        highlight.style.width = rect.width + 'px';
+        highlight.style.height = rect.height + 'px';
+        // 全域
+        highlight.style.top = rect.top + window.scrollY + "px";
+        highlight.style.left = rect.left + window.scrollX + "px";
+        // 區域
+        // highlight.style.top = elTarget.offsetTop + "px";
+        // highlight.style.left = elTarget.offsetLeft + "px";
+      };
+      target.forEach(element => {
+        element.addEventListener("mouseenter", enterHandler);
+      });
+      window.addEventListener("resize", resizeHandler);
+
+    })();
   </script>
 </body>
 </html>
+
 

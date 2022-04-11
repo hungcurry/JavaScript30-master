@@ -6,6 +6,9 @@ html {
   box-sizing: inherit;
 }
 
+*{
+  outline: 1px solid red;
+}
 body {
   min-height: 100vh;
   margin: 0; /* Important! */
@@ -55,7 +58,7 @@ a {
 
 .menu a {
   display: inline-block;
-  padding: 5px;
+  padding: 5px 10px;
   margin: 0 20px;
   color: black;
 }
