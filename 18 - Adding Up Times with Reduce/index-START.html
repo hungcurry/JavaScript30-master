@@ -182,6 +182,49 @@
     </li>
   </ul>
 <script>
+  (function(){
+    const lis = document.querySelectorAll('li');
+
+    // 類陣列 轉 陣列
+    // Array.from(lis)
+    // [].slice.call(lis)
+    // [...lis]
+    let total = [...lis]
+      .map(item => item.dataset.time)
+      .map(time => {
+        let [min , sec] = time.split(':');
+        return min * 60 + sec * 1;
+      })
+      .reduce((pre , next) => {
+        return pre + next;
+      }, 0)
+    // 17938
+
+    // 秒 開始算
+    // let sec = total  % 60 ; 
+    // let min =  ((total - sec) / 60) % 60;
+    // let hour = (total - min * 60 - sec) / 3600;
+    // console.log(hour ,min , sec);
+
+    // 時 開始算
+    let hour = Math.floor(total / 3600);
+    let min = Math.floor((total % 3600) / 60) ;
+    let sec = total  % 60 ; 
+    console.log(hour ,min , sec);
+
+    // 中斷foreach 辦法
+    let array = [1, 2, 3, 4, 5];
+    array.forEach(function(item, index) {
+        if (item === 2) {
+          array = array.concat(array.splice(1, array.length - index));
+        }
+        console.log(item); //只输出1,2
+    });
+
+  
+    
+
+  })();
 </script>
 </body>
 </html>
