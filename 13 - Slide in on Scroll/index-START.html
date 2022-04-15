@@ -4,6 +4,64 @@
   <meta charset="UTF-8">
   <title>Document</title>
 </head>
+<style>
+  html {
+    box-sizing: border-box;
+    background: #ffc600;
+    font-family: 'helvetica neue';
+    font-size: 20px;
+    font-weight: 200;
+  }
+  
+  body {
+    margin: 0;
+  }
+  
+  *, *:before, *:after {
+    box-sizing: inherit;
+  }
+
+  h1 {
+    margin-top: 0;
+  }
+
+  .site-wrap {
+    max-width: 700px;
+    margin: 100px auto;
+    background: white;
+    padding: 40px;
+    text-align: justify;
+  }
+
+  .align-left {
+    float: left;
+    margin-right: 20px;
+  }
+
+  .align-right {
+    float: right;
+    margin-left: 20px;
+  }
+
+  .slide-in {
+    opacity: 0;
+    transition: all .5s;
+  }
+
+  .align-left.slide-in {
+    transform: translateX(-30%) scale(0.95);
+  }
+  
+  .align-right.slide-in {
+    transform: translateX(30%) scale(0.95);
+  }
+
+  .slide-in.active {
+    opacity: 1;
+    transform: translateX(0%) scale(1);
+  }
+
+</style>
 <body>
 
   <div class="site-wrap">
@@ -43,81 +101,76 @@
   </div>
 
   <script>
-    function debounce(func, wait = 20, immediate = true) {
-      var timeout;
-      return function() {
-        var context = this, args = arguments;
-        var later = function() {
-          timeout = null;
-          if (!immediate) func.apply(context, args);
-        };
-        var callNow = immediate && !timeout;
-        clearTimeout(timeout);
-        timeout = setTimeout(later, wait);
-        if (callNow) func.apply(context, args);
+
+  // Debounce(抖動) : 停止20毫秒 才會執行 (否則不做事觸發)
+  // 適合：mousemove 一直滑動 直到停止 才會觸發事件
+
+  // Throttle(節流) : 20毫秒 至少執行一次
+  // 適合：scroll 
+  // Debounce 不適合scroll ：原因 要是使用者卷軸滑太快 就根本不會觸發事件
+
+
+  function debounce(func, wait = 20, immediate = true) {
+    var timeout;
+    return function() {
+      var context = this, args = arguments;
+      var later = function() {
+        timeout = null;
+        if (!immediate) func.apply(context, args);
       };
-    }
+      var callNow = immediate && !timeout;
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+      if (callNow) func.apply(context, args);
+    };
+  };
 
+  function throttling(func, wait = 20, immediate = true) {
+    var timeout;
+    return function() {
+      var context = this,args = arguments;
+      var later = function() {
+        timeout = null;
+        func.apply(context, args);
+      };
+      if (timeout) return;
+      var callNow = immediate && !timeout;
+      clearTimeout(timeout);
+      timeout = setTimeout(later, wait);
+      if (callNow) func.apply(context, args);
+    };
+  }
+
+  function scrollHandler(){
+    // 看debounce /  throttling 間隔時間
+    // let data = new Date().getTime();
+    // console.log(data);
+
+    let windowTop = window.scrollY;
+    let windowBottom = windowTop + window.innerHeight;
+    const images = document.querySelectorAll('img');
+    images.forEach(img =>{
+      const imgTop = img.offsetTop;
+      const imgMiddle = imgTop + (img.offsetHeight / 2);
+      console.log(
+        "imgMiddle" , imgMiddle , 
+        "windowBottom" ,windowBottom ,
+        "windowTop" ,windowTop ,
+        );
+      // 用 windowBottom 來計算進場
+      // if( imgMiddle < windowBottom ){
+      //   img.classList.add('active');
+      // }
+      // 進退場
+      if( imgMiddle < windowBottom && imgMiddle > windowTop){
+        img.classList.add('active');
+      }else {
+        img.classList.remove("active");
+      }
+    });
+  };
+  window.addEventListener("scroll", throttling(scrollHandler));
   </script>
-
-  <style>
-    html {
-      box-sizing: border-box;
-      background: #ffc600;
-      font-family: 'helvetica neue';
-      font-size: 20px;
-      font-weight: 200;
-    }
-    
-    body {
-      margin: 0;
-    }
-    
-    *, *:before, *:after {
-      box-sizing: inherit;
-    }
-
-    h1 {
-      margin-top: 0;
-    }
-
-    .site-wrap {
-      max-width: 700px;
-      margin: 100px auto;
-      background: white;
-      padding: 40px;
-      text-align: justify;
-    }
-
-    .align-left {
-      float: left;
-      margin-right: 20px;
-    }
-
-    .align-right {
-      float: right;
-      margin-left: 20px;
-    }
-
-    .slide-in {
-      opacity: 0;
-      transition: all .5s;
-    }
-
-    .align-left.slide-in {
-      transform: translateX(-30%) scale(0.95);
-    }
-    
-    .align-right.slide-in {
-      transform: translateX(30%) scale(0.95);
-    }
-
-    .slide-in.active {
-      opacity: 1;
-      transform: translateX(0%) scale(1);
-    }
-
-  </style>
-
 </body>
 </html>
+
