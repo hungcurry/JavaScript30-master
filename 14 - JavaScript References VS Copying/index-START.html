@@ -5,52 +5,108 @@
   <title>JS Reference VS Copy</title>
 </head>
 <body>
-
   <script>
-    // start with strings, numbers and booleans
+    let a = "A";
+    let b = a;
+    a = "B";
+    console.log(a ,b); // B,A
 
-    // Let's say we have an array
+    let c = 0;
+    let d = c;
+    c++;
+    console.log(c , d); // 1,0
+
+    let e = true;
+    let f = e;
+    e = !f;
+    console.log(e , f); // false,true
+
+    let g = "A";
+    let h = "A";
+    let i = "A";
+    (h = "B") , (i = "C"), (g += h) , (g += i);
+    console.log(g, h, i); // ABC B C
+
+
+
+    //--------------
+    // Array
+    //--------------
+    // 1.ary.slice(0);
+    // 2.[].concat(ary);
+    // 3.[...ary];
+
     const players = ['Wes', 'Sarah', 'Ryan', 'Poppy'];
 
-    // and we want to make a copy of it.
+    const players2 = players;
+    players2[0] = "curry";
+    console.log(players2 , players); 
+    //  ['curry', 'Sarah', 'Ryan', 'Poppy'] (4) ['curry', 'Sarah', 'Ryan', 'Poppy']
 
-    // You might think we can just do something like this:
+    const players3 = players.slice();
+    players3[0] = "marry";
+    console.log(players3 , players); 
+    // ['marry', 'Sarah', 'Ryan', 'Poppy'] (4) ['curry', 'Sarah', 'Ryan', 'Poppy']
 
-    // however what happens when we update that array?
+    // 淺拷貝
+    function createObj(name){
+      return {
+        name
+      };
+    };
+    let p1 = createObj("curry");
+    let p2 = createObj("B");
+    let p3 = createObj("C");
+    let p4 = createObj("D");
 
-    // now here is the problem!
+    let f1 = [p1 , p2 , p3 , p4];
+    // [ {name: 'curry'} , {name: 'B'} , {name: 'C'} ,{name: 'D'} ]
+    let f2 = f1.slice();
 
-    // oh no - we have edited the original array too!
+    // f2[0].name = 'marry';
+    // console.log(f1[0].name); // {name: 'marry'}
 
-    // Why? It's because that is an array reference, not an array copy. They both point to the same array!
+    // f2[0] = { name : "A1"};
+    // console.log(f1[0].name); // {name: 'curry'}
 
-    // So, how do we fix this? We take a copy instead!
 
-    // one way
 
-    // or create a new array and concat the old one in
+    //--------------
+    // obj
+    //--------------
+    // 1.Object.assign({} , obj)
+    // 2.{...obj}
 
-    // or use the new ES6 Spread
+    let person = {
+      name : "curry",
+      age : 80
+    }
+    const person2 = person;
 
-    // now when we update it, the original one isn't changed
+    // person = "xxx";
+    // console.log(person , person2); // xxx , {name: 'curry', age: 80}
 
-    // The same thing goes for objects, let's say we have a person object
+    person.name = "xxx";
+    console.log(person , person2); // {name: 'xxx', age: 80} {name: 'xxx', age: 80}
 
-    // with Objects
-    const person = {
-      name: 'Wes Bos',
-      age: 80
+
+    const wes = {
+      name: 'Wes',
+      age: 100,
+      social: {
+        twitter: '@wesbos',
+        facebook: 'wesbos.developer'
+      }
     };
 
-    // and think we make a copy:
+    const wes2 = Object.assign({}, wes);
+    const wes3 = JSON.parse(JSON.stringify(wes));
 
-    // how do we take a copy instead?
 
-    // We will hopefully soon see the object ...spread
+    // wes2.social = null;  // wes.social = {tw , fb};
+    // wes2.social.facebook = null  //  wes.social = null
 
-    // Things to note - this is only 1 level deep - both for Arrays and Objects. lodash has a cloneDeep method, but you should think twice before using it.
 
   </script>
-
 </body>
 </html>
