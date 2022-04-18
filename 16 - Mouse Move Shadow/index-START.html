@@ -15,11 +15,12 @@
     color: black;
     font-family: sans-serif;
   }
-
+ *{
+    outline: 1px solid red;
+  }
   body {
     margin: 0;
   }
-
   .hero {
     min-height: 100vh;
     display: flex;
@@ -27,7 +28,6 @@
     align-items: center;
     color: black;
   }
-
   h1 {
     text-shadow: 10px 10px 0 rgba(0,0,0,1);
     font-size: 100px;
@@ -35,6 +35,46 @@
   </style>
 
 <script>
+  (function(){
+    const hero = document.querySelector('.hero');
+    const text = document.querySelector('h1');
+    function moveHandler(e){
+      
+      let { offsetX , offsetY } = e;
+      // console.log(offsetX , offsetY);
+      let number = 100;
+
+      // 必加判斷 如果不是點到 監聽者本身 
+      // 而是點到元素 必須多補不足的長度
+      if(e.target !== this){
+        offsetX += offsetX + e.target.offsetLeft;
+        offsetY += offsetY + e.target.offsetTop;
+      }
+
+      // 取長度的百分比  
+      // 範圍是 0~1 要改成 -1 ~ 1 才會有雙向  
+      // 公式 (0 * 2 -1 ) ~ (1 * 2 -1) => -1 ~ 1
+      let percentX = Math.floor( (offsetX / this.offsetWidth) * number ) * 2 - number;
+      let percentY = Math.floor((offsetY / this.offsetHeight) * number ) * 2 - number;
+      console.log(percentX , percentY);
+
+      // 讓陰影呈現反向 ＊-1
+      text.style.textShadow = `
+        ${percentX * -0.3 }px ${percentY * -0.3}px 5px rgba(255 , 0 , 0 , 0.8),
+        ${percentX * -0.6 }px ${percentY * -0.6}px 5px rgba(0, 255 , 0 , 0.8),
+        ${percentX * -1 }px ${percentY * -1}px 5px rgba(0 , 0 , 255 , 0.8),
+        ${percentX * 1}px ${percentY * 1}px 5px rgba(255,0,255,0.7),
+        ${percentX * 1.5}px ${percentY * 1.5}px 5px rgba(255, 255, 0, 0.734)
+      `;
+      // text.style.textShadow = `
+      //   ${percentX}px ${percentY}px 0 rgba(255,0,255,0.7),
+      //   ${percentX * -1}px ${percentY}px 0 rgba(0,255,255,0.7),
+      //   ${percentX}px ${percentY * -1}px 0 rgba(0,255,0,0.7),
+      //   ${percentX * -1}px ${percentY}px 0 rgba(0,0,255,0.7)
+      // `;
+    };
+    hero.addEventListener("mousemove" , moveHandler);
+  })();
 </script>
 </body>
 </html>
