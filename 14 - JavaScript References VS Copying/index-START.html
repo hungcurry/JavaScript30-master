@@ -63,11 +63,11 @@
     // [ {name: 'curry'} , {name: 'B'} , {name: 'C'} ,{name: 'D'} ]
     let f2 = f1.slice();
 
-    // f2[0].name = 'marry';
-    // console.log(f1[0].name); // {name: 'marry'}
+    f2[0].name = 'marry';
+    console.log(f1[0].name); // {name: 'marry'}
 
-    // f2[0] = { name : "A1"};
-    // console.log(f1[0].name); // {name: 'curry'}
+    f2[0] = { name : "A1"};
+    console.log(f1[0].name); // {name: 'curry'}
 
 
 
@@ -83,8 +83,8 @@
     }
     const person2 = person;
 
-    // person = "xxx";
-    // console.log(person , person2); // xxx , {name: 'curry', age: 80}
+    person = "xxx";
+    console.log(person , person2); // xxx , {name: 'curry', age: 80}
 
     person.name = "xxx";
     console.log(person , person2); // {name: 'xxx', age: 80} {name: 'xxx', age: 80}
@@ -102,9 +102,8 @@
     const wes2 = Object.assign({}, wes);
     const wes3 = JSON.parse(JSON.stringify(wes));
 
-
-    // wes2.social = null;  // wes.social = {tw , fb};
-    // wes2.social.facebook = null  //  wes.social = null
+    wes2.social = null;  // wes.social = {tw , fb};
+    wes2.social.facebook = null  //  wes.social = null
 
 
   </script>
