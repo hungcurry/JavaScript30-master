@@ -48,6 +48,26 @@
 <script>
 const bands = ['The Plot in You', 'The Devil Wears Prada', 'Pierce the Veil', 'Norma Jean', 'The Bled', 'Say Anything', 'The Midway State', 'We Came as Romans', 'Counterparts', 'Oh, Sleeper', 'A Skylit Drive', 'Anywhere But Here', 'An Old Dog'];
 
+// String.fromCharCode
+console.log("咖".charCodeAt()); // 21654
+console.log(String.fromCharCode(21654)); // 咖
+console.log("a".charCodeAt());// 97 a的Unicode編碼是104
+
+function strip(bandName) {
+  return bandName.replace(/^(a |the |an )/i, '');
+}
+
+bands.sort((a , b)=>{
+  console.log(strip(a));
+  return strip(a) > strip(b) ? 1 : -1;
+});
+
+const bandEl = document.querySelector('#bands');
+let str = bands.map((band, i) =>{
+  return `<li>${ band }</li>`;
+}).join('');
+// console.log(str);
+bandEl.innerHTML = str;
 
 </script>
 
