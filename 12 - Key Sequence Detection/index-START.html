@@ -7,6 +7,24 @@
 </head>
 <body>
 <script>
+  (function(){
+    const secretCode = [38 , 38 , 40 , 40 , 37 , 39 , 37 , 39 , 66 , 65];
+    const ary = [];
+    // 陣列比對 轉字串比較
+    function keyupHandler(e){
+      ary.push(e.keyCode);
+      // 防止超過10個
+      if(ary.length > secretCode.length) ary.shift();
+      // 陣列比對
+      if(ary.join('|') === secretCode.join('|')){
+        console.log(ary.join('|'));
+        console.log(secretCode.join('|'));
+        console.log('DING DING!');
+        cornify_add();
+      }
+    };
+    window.addEventListener("keyup", keyupHandler)
+  })();
 </script>
 </body>
 </html>
