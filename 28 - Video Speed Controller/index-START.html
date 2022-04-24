@@ -15,6 +15,34 @@
   </div>
 
 <script>
+  (function(){
+    const speed = document.querySelector('.speed');
+    const bar = document.querySelector('.speed-bar');
+    const video = document.querySelector('video');
+
+    function moveHandler(e){
+      let Y = e.pageY - this.offsetTop;
+      let percent = Y / this.offsetHeight;
+
+      // bar拖動
+      let height = Math.round(percent * 100) + "%";
+      console.log(`height` , height);
+      bar.style.height = height;
+
+      const min = 0.5;
+      const max = 3;
+      // 速度
+      // 0 ~ 1 => 0.5 ~ 3
+      // (0 ~ 1) * (大 － 小) ＋ 小
+      percent = percent * (max - min)+ min ;
+      percent = percent > max ? max : percent < min ? min : percent;
+      console.log(`percent` , percent); 
+      bar.textContent = percent.toFixed(2) + "x";
+      video.playbackRate = percent;
+
+    };
+    speed.addEventListener('mousemove', moveHandler);
+  })();
 </script>
 </body>
 </html>
