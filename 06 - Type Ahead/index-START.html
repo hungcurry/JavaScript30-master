@@ -15,8 +15,79 @@
     </ul>
   </form>
 <script>
-const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+(function() {
+  const url = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+  const searchInput = document.querySelector('.search');
+  const suggestions = document.querySelector('.suggestions');
+  let searchAry = [];
+  let regex = null;
+  // XMLHttpRequest
+  // let xhr = new XMLHttpRequest();
+  // xhr.addEventListener('load' , requestHandler);
+  // xhr.open('get', url, true); 
+  // xhr.send(null);
+  // function requestHandler(){
+  //   console.log(JSON.parse(this.response));
+  // };
 
+  // toLocaleString 必須用數字 但資料如果是字串 需要轉型
+  function Num2(num){
+    return (num * 1).toLocaleString();
+  }
+  let n2 = Num2(5241522.22222);
+  let n3 = Num2("123456789.333333");
+  console.log(n2);
+  console.log(n3);
+  
+  const cities = { ary:[] };
+  // Fetch
+  fetch(url)
+    .then((res)=> res.json())
+    .then((res)=>{
+      cities.ary = res;
+      // console.log(cities.ary);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
+    function numberWithCommas(x) {
+      // 寫法一 千分號
+      // return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+
+      // 寫法二 千分號
+      // toLocaleString 必須用數字 但資料如果是字串 需要轉型
+      return (x * 1).toLocaleString();
+    }  
+
+    function inputHandler(e) {
+      let searchAry = [];
+      let value = e.target.value.trim();
+      // 如果有變數  regex 要改用 建構式才能帶入
+      regex = new RegExp(value , 'gi');
+      searchAry = cities.ary.filter((obj)=>{
+        return obj.city.match(regex) || obj.state.match(regex);
+      })
+      console.log(searchAry);
+      renderHandler(value , searchAry);
+    }
+
+    function renderHandler(value , ary){
+      let str = "";
+      ary.forEach((item)=>{
+        let cityName = item.city.replace(regex, `<span class="hl">${value}</span>`);
+        let stateName = item.state.replace(regex, `<span class="hl">${value}</span>`);
+        str+= `
+        <li>
+          <span class="name">${cityName}, ${stateName}</span>
+          <span class="population">${numberWithCommas(item.population)}</span>
+        </li>
+        `
+      })
+      suggestions.innerHTML = str;
+    };
+    searchInput.addEventListener('keyup', inputHandler);
+})();
 </script>
 </body>
 </html>
