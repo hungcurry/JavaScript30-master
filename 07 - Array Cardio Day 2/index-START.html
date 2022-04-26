@@ -28,14 +28,46 @@
     // Array.prototype.some() // is at least one person 19 or older?
     // Array.prototype.every() // is everyone 19 or older?
 
+    // Date.now() //  回傳當前的 timestamp（毫秒）
+    // new Date() //  回傳目前時間的日期物件  new Date().getTime()
+    let someAry = people.some((person)=>{
+      return new Date().getUTCFullYear() - person.year >= 19;
+    })
+    console.log('someAry' , someAry);
+    let everyAry = people.every((person)=>{
+      return new Date().getUTCFullYear() - person.year >= 19;
+    })
+    console.log('everyAry' ,everyAry);
+
+
     // Array.prototype.find()
     // Find is like filter, but instead returns just the one you are looking for
     // find the comment with the ID of 823423
+    let findObj = comments.find((comment)=>{
+      return comment.id === 823423;
+    })
+    console.log('findObj' ,findObj);
 
     // Array.prototype.findIndex()
     // Find the comment with this ID
     // delete the comment with the ID of 823423
+    let findIndex = comments.findIndex((comment)=>{
+      return comment.id === 823423;
+    })
+    console.log('findIndex' ,findIndex);
 
+    // splice 動到原始陣列
+    // let splice = comments.splice(findIndex , 1);
+    // console.log(`splice` , splice , comments);
+
+    // slice 不會動到原始陣列 淺層複製
+    let pre = comments.slice(0 , findIndex);
+    let next = comments.slice(findIndex + 1);
+    let slice = [...pre , ...next];
+    console.log('slice' ,slice , comments);
+
+    let slice2 = [...comments].splice(findIndex , 1);
+    console.log('slice2' ,slice , comments);
   </script>
 </body>
 </html>
