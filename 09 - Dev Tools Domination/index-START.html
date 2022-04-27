@@ -10,36 +10,179 @@
 
   <script>
     const dogs = [{ name: 'Snickers', age: 2 }, { name: 'hugo', age: 8 }];
-
     function makeGreen() {
       const p = document.querySelector('p');
       p.style.color = '#BADA55';
       p.style.fontSize = '50px';
     }
+    // 工具
+    /* 
+    注意:  這邊命名要跟預設console一樣 會蓋掉原本設定功能
+          也就是 這物件裡面沒寫的功能 預設那些就都會不見
+    檢驗:  window.console.dir(console); 
+    */
+    const console = {
+      isDev : true,
+      log(...args) {
+        if(!this.isDev) return;
+        // window.console.log('%c住手' , "font-size:32px; color: red;");
+        window.console.log(...args);
+        window.console.log('%c----end----' , "color: red;");
+      },
+      warn(...args){
+        window.console.warn(...args);
+      },
+      error(...args){
+        window.console.error(...args);
+      },
+      //  有條件判斷的訊息
+      assert(...args){
+        if(!this.isDev) return;
+        window.console.assert(...args);
+      }, 
+      dir(...args){
+        if(!this.isDev) return;
+        window.console.dir(...args);
+      },
+      table(...args){
+        if(!this.isDev) return;
+        window.console.table(...args);
+      },
+      count(...args){
+        if(!this.isDev) return;
+        window.console.count(...args);
+      },
+      time(...args){
+        if(!this.isDev) return;
+        window.console.time(...args);
+      }, 
+      timeEnd(...args){
+        if(!this.isDev) return;
+        window.console.timeEnd(...args);
+      }, 
+    }
 
+
+
+    let name = "curry";
     // Regular
+    console.log(`123`);
+
 
     // Interpolated
+    // 使用字符串替換
+    /* %s:字串  %f:浮點數  %d:整數  %c:CSS 樣式*/
+    console.log("my name is %s !!!" , "curry");
+    console.log("I have %f dollars" , 3.45);
+    console.log("I have %d dollars" , 500);
+    // 樣板字面值取代
+    console.log(`${name}`);
+
 
     // Styled
+    console.log("%c白爛貓" , "font-size:32px; color: red;");
+
 
     // warning!
+    console.warn(`警告 有問題喔`);
+
 
     // Error :|
+    console.error(`錯誤 有問題喔`);
 
     // Info
+    // 跟log 一樣
 
     // Testing
-
+    console.assert(false , "訊息");
+    console.assert("" , "訊息");
+    console.assert(0 , "訊息");
+    console.assert(null , "訊息");
+    console.assert(NaN , "訊息");
+    console.assert(undefined , "訊息");
     // clearing
+    // cmd + k
 
     // Viewing DOM Elements
+    const p = document.querySelector('p');
+    console.log(p);
+    console.dir(p);
+    // 陣列的方法 都在prototype
+
 
     // Grouping together
+    console.table(dogs);
+    // 設條件塞選呈現自己要的
+    console.table(dogs , ['name']);
 
     // counting
+    // 計算數量
+    // console.count('Wes');
+    // console.count('Wes');
+    // console.count('Steve');
+    // console.count('Steve');
+    // console.count('Wes');
+    // console.count('Steve');
+    // console.count('Wes');
+    // console.count('Steve');
+    // console.count('Steve');
+    // console.count('Steve');
+    // console.count('Steve');
+    // console.count('Steve');
 
     // timing
+
+    /* --------
+    測試 變數時間
+    ---------*/ 
+    /* 
+    變數外露在window下 所消耗的時間會比較久
+    如果用 IIFE {} 包起來 效能速度大家就會都變一樣
+    結論： 有封裝 變數取用就會變快
+    */
+    console.time(`test out`); // 慢
+    let i1;
+    let j1;
+    for ( i1 = 1; i1 < 10000000; i1++) {
+      j1 = i1;
+    }
+    console.timeEnd(`test out`);
+
+    console.time(`test in`); // 快
+    for ( let i2 = 1; i2 < 10000000; i2++) {
+      let j2 = i2;
+    }
+    console.timeEnd(`test in`);
+
+
+    console.time(`test i`); // 快
+    let j3;
+    for ( let i3 = 1; i3 < 10000000; i3++) {
+      j3 = i3;
+    }
+    console.timeEnd(`test i`);
+
+
+    console.time(`test j`); // 慢
+    let i4;
+    for ( i4 = 1; i4 < 10000000; i4++) {
+      let j4 = i4;
+    }
+    console.timeEnd(`test j`);
+    console.log(``);
+
+    /* --------
+    測試 API時間
+    ---------*/ 
+    console.time('fetching data');
+    fetch('https://api.github.com/users/wesbos')
+      .then(data => data.json())
+      .then(data => {
+        console.timeEnd('fetching data');
+        console.log(data);
+      });
+
+
 
   </script>
 </body>
