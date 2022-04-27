@@ -5,7 +5,7 @@
   <title>Scoped CSS Variables and JS</title>
 </head>
 <body>
-  <h2>Update CSS Variables with <span class='hl'>JS</span></h2>
+  <h2>Update CSS Variables with <span class='h1'>JS</span></h2>
 
   <div class="controls">
     <label for="spacing">Spacing:</label>
@@ -21,11 +21,22 @@
   <img src="https://source.unsplash.com/7bwQXzbF6KE/800x500">
 
   <style>
-
+    :root {
+      --base: #ffc600;
+      --spacing: 10px;
+      --blur: 10px;
+    }
+    img {
+      padding: var(--spacing);
+      background: var(--base);
+      filter: blur(var(--blur));
+    }
+    .h1 {
+      color: var(--base);
+    }
     /*
       misc styles, nothing to do with CSS variables
     */
-
     body {
       text-align: center;
       background: #193549;
@@ -34,18 +45,63 @@
       font-weight: 100;
       font-size: 50px;
     }
-
     .controls {
       margin-bottom: 50px;
     }
-
     input {
       width: 100px;
     }
   </style>
 
   <script>
-  </script>
+    (function(){
+      const inputs = document.querySelectorAll('.controls input');
+      const img = document.querySelector('img');
+      const h1 = document.querySelector('.h1');
+      const html = document.querySelector('html');
+      function changeHandler(){
 
+        // 1.程式寫入 => 操作畫面
+        // switch (this.name) {
+        //   case "spacing":
+        //     img.style.padding = this.value + "px";
+        //     break;
+        //   case "blur":
+        //     img.style.filter = `blur(${this.value}px)`
+        //     break;
+        //   case "base":
+        //     console.log(this.value);
+        //     img.style.background = this.value;
+        //     h1.style.color = this.value;
+        //     break;
+        // }
+        
+
+        // 2.程式寫入 => 資料(css root) =>操作畫面
+        /* 
+        都一樣
+        document.querySelector('html')
+        document.querySelector('root') 
+        document.documentElement
+        */
+        const html = document.querySelector('html'); 
+
+        // 方法一
+        // 範例 el.setProperty('margin', '1px 2px');
+        // html.style.setProperty(`--${this.name}` , this.value + (this.name === "base" ? "" : "px" ));
+
+        // 方法二
+        // dataset 有單位就用 沒有就用 ""
+        // 範例 el.setProperty('margin', '1px 2px');
+        const unit = this.dataset.sizing || '';
+        html.style.setProperty(`--${this.name}` , this.value + unit);
+
+      };
+      inputs.forEach(input =>{
+        input.addEventListener("mousemove" , changeHandler);
+        input.addEventListener("change" , changeHandler);
+      })
+    })();
+  </script>
 </body>
 </html>
