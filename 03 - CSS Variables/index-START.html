@@ -86,6 +86,12 @@
         */
         const html = document.querySelector('html'); 
 
+        // :root {
+        //   --base: #ffc600;
+        //   --spacing: 10px;
+        //   --blur: 10px;
+        // }
+
         // 方法一
         // 範例 el.setProperty('margin', '1px 2px');
         // html.style.setProperty(`--${this.name}` , this.value + (this.name === "base" ? "" : "px" ));
@@ -98,7 +104,9 @@
 
       };
       inputs.forEach(input =>{
+        // mousemove 拖動input range 觸發
         input.addEventListener("mousemove" , changeHandler);
+        // change 到最後才會觸發 所以色彩必須是選到顏色然後才觸發
         input.addEventListener("change" , changeHandler);
       })
     })();
