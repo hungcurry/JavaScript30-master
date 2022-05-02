@@ -9,14 +9,17 @@
 
     <div class="clock">
       <div class="clock-face">
-        <div class="hand hour-hand"></div>
-        <div class="hand min-hand"></div>
         <div class="hand second-hand"></div>
+        <div class="hand min-hand"></div>
+        <div class="hand hour-hand"></div>
       </div>
     </div>
 
 
   <style>
+    *{
+      outline: 1px solid red;
+    }
     html {
       background: #018DED url(https://unsplash.it/1500/1000?image=881&blur=5);
       background-size: cover;
@@ -53,22 +56,115 @@
       position: relative;
       width: 100%;
       height: 100%;
-      transform: translateY(-3px); /* account for the height of the clock hands */
+      /* transform: translateY(-3px); */
+      /* account for the height of the clock hands */
     }
-
-    .hand {
-      width: 50%;
-      height: 6px;
-      background: black;
+    .clock-face::before{
+      width: 30px;
+      height: 30px;
+      content: "";
       position: absolute;
+      left: 50%;
       top: 50%;
+      transform:translate(-50% , -50%);
+      background-color: #fff;
+      border-radius: 50%;
+      z-index: 5;
+    }
+    .hand {
+      width: 100%;
+      height: 100%;
+      position : absolute;
+      top: 0;
+      left:0;
+    }
+    .second-hand{
+      transform : rotate(0deg);
+    }
+    .second-hand::before{
+      content: "";
+      width : 5px;
+      height: 50%;
+      position : absolute;
+      left: 50%;
+      bottom: 50%;
+      transform:translateX(-50%);
+      background-color: red;
+    }
+    .min-hand{
+      transform : rotate(90deg);
+    }
+    .min-hand::before{
+      content: "";
+      width : 8px;
+      height: 35%;
+      position : absolute;
+      left: 50%;
+      bottom: 50%;
+      transform:translateX(-50%);
+      background-color: #fff;
+    }
+    .hour-hand{
+      transform : rotate(-34deg);
+    }
+    .hour-hand::before{
+      content: "";
+      width : 15px;
+      height: 25%;
+      position : absolute;
+      left: 50%;
+      bottom: 50%;
+      transform:translateX(-50%);
+      background-color: #fff;
     }
 
   </style>
 
   <script>
+    (function(){
+      const secondHand = document.querySelector('.second-hand');
+      const minsHand = document.querySelector('.min-hand');
+      const hourHand = document.querySelector('.hour-hand');
+
+      function setClock(){
+        const data = new Date();
+        // 秒分１個刻度 6度  時１個刻度 30度
+        const secondDeg = data.getSeconds() * (360 / 60);
+        const minsDeg = data.getMinutes() * (360 / 60 ) + data.getSeconds() * (6 / 60) ;
+        const hourDeg = data.getHours() * (360 / 12) + data.getMinutes() * (30 / 60);
+        console.log("秒",secondDeg ,"分", minsDeg , "時",hourDeg);
+
+        secondHand.style.transform = `rotate(${secondDeg}deg)`;
+        minsHand.style.transform = `rotate(${minsDeg}deg)`;
+        hourHand.style.transform = `rotate(${hourDeg}deg)`;
+      };
+      setClock();// 初始化
 
 
+      // 1.設定間隔,持續執行
+      setInterval(setClock , 1000);
+
+
+      // 2.設定延遲,執行一次
+      // function setTimeoutFn(){
+      //   setClock();
+      //   setTimeout(setTimeoutFn , 1000);
+      // };
+      // setTimeout(setTimeoutFn , 1000);
+
+
+      // 3.處理畫面更新的setTimeout
+      /* Hz越大 更新頻率越快 適合做動畫類
+        1000 / 60Hz => 17ms / 次 
+        1000 / 120Hz => 8ms / 次 
+        1000 / 144Hz => 7ms / 次 
+      */
+      // function animationFn(){
+      //   setClock();
+      //   requestAnimationFrame(animationFn);
+      // };
+      // requestAnimationFrame(animationFn);
+    })();
   </script>
 </body>
 </html>
