@@ -18,12 +18,75 @@
         <input type="text" name="minutes" placeholder="Enter Minutes">
       </form>
     </div>
-    <div class="display">
+    <h1 class="display">
       <h1 class="display__time-left"></h1>
       <p class="display__end-time"></p>
-    </div>
+    </h1>
   </div>
-
-  <script src="scripts-START.js"></script>
+  <!-- <script src="scripts-FINISHED.js"></script> -->
+  <script>
+    (function(){
+      const buttons = document.querySelectorAll('.timer__button');
+      const input = document.querySelector('#custom');
+      const reciprocalTime = document.querySelector('.display__time-left');
+      const displayTime = document.querySelector('.display__end-time');
+      let time = null;
+      // buttons
+      function getTimeHandler(){
+        let sec = parseInt(this.dataset.time);
+        startTime(sec);
+      };
+      // input
+      function inputHandler(e){
+        e.preventDefault();
+        // form 如果裡面的子元素 有name 可以用name 來找尋元素
+        let value = parseInt(this.minutes.value);
+        if(value) {
+          value = value * 60;
+          startTime(value);
+          this.reset();
+        };
+      };
+      function startTime(sec){
+        let nowTime = new Date().getTime();
+        // console.log(sec);
+        // console.log(nowTime);
+        // nowTime 這邊是毫秒 所以sec*1000 變同單位相加
+        let totalTime = nowTime + (sec * 1000);
+        console.log('totalTime' , totalTime);
+        // 倒數計時
+        countdown(sec);
+        // 現在時間
+        showEndTime(totalTime);
+      };
+      // 倒數計時
+      function countdown(sec){
+        clearInterval(time);
+        time = setInterval(function(){
+          if(sec >= 0 ){
+            let showMinutes = Math.floor(sec / 60); // 分
+            let showSec = sec % 60; // 秒
+            sec--;
+            console.log(sec);
+            reciprocalTime.textContent = `${showMinutes}: ${showSec}`;
+          }else{
+            reciprocalTime.textContent = `Happy Coding !!!`;
+            clearInterval(time);
+          }
+        }, 1000); // 更新時間60Hz 1000 / 60(Hz)  => 16
+      };
+      // 現在時間
+      function showEndTime(totalTime){
+        let showDate  = new Date(totalTime);
+        let showHour = showDate.getHours(); 
+        let showMinutes = showDate.getMinutes();
+        // 補位數 如果分小於10  => "0" + 2 = 02 否則 showMinutes
+        showMinutes = showMinutes < 0 ? "0" + showMinutes : showMinutes;
+        displayTime.textContent = `Be Back At ${showHour} : ${showMinutes}`
+      };
+      buttons.forEach(button => button.addEventListener('click' , getTimeHandler));
+      input.addEventListener('submit', inputHandler);
+    })();
+  </script>
 </body>
 </html>
