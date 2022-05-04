@@ -64,6 +64,9 @@ h1 {
   transition:all 0.4s;
 }
 
-.hole.up .mole {
+/* .hole.up .mole {
+  top: 0;
+} */
+.mole.up {
   top: 0;
 }

@@ -33,10 +33,73 @@
   </div>
 
 <script>
-  const holes = document.querySelectorAll('.hole');
   const scoreBoard = document.querySelector('.score');
-  const moles = document.querySelectorAll('.mole');
+  const moles = [...document.querySelectorAll('.mole')];
+  let score = null;
+  let timeUp = true;
 
+  // 老鼠狀態
+  const state = moles.reduce((pre , next , idx)=>{
+    pre[idx] = false;
+    return pre;
+  }, {})
+  console.log(state); // {0: false, 1: false, ...}
+
+
+  let molesProxy = new Proxy(state , {
+    get(target , key){
+      return target[key];
+    },
+    set(target , key , value){
+      target[key] = value;
+      if (value) {
+        moles[key].addEventListener("click", clickHandler);
+        moles[key].classList.add("up");
+      } else {
+        moles[key].classList.remove("up");
+      }
+    }
+  });
+
+
+  /* 
+  防呆 點擊老鼠獲得分數  
+  資料驅動畫面可防止 直接添加class 來點擊
+  也就是資料如果不確認成true 就不會監聽並作點擊效果
+  */
+  const clickHandler = function() {
+    // console.log(this); 點擊到的老鼠
+    let idx = moles.indexOf(this);
+    if(molesProxy[idx]){
+      // 每次點擊＋1
+      setStore(score + 1);
+      // 滑鼠隱藏下去
+      molesProxy[idx] = false;
+    }
+  };
+
+
+  const setStore = function (s){
+    score = s;
+    scoreBoard.textContent = score;
+  };
+
+
+  // 多看幾次 有點不是很懂這段邏輯
+  const getRender = function () {
+
+  }
+
+
+  const startGame = function () {
+    setStore(0);
+    timeUp = false;
+    getRender();
+    setTimeout(() =>{
+      timeUp = true;
+      alert("Time up")
+    }, 10000)
+  };
 </script>
 </body>
 </html>
