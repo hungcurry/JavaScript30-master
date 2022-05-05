@@ -35,33 +35,30 @@
 <script>
   const scoreBoard = document.querySelector('.score');
   const moles = [...document.querySelectorAll('.mole')];
-  let score = null;
-  let timeUp = true;
+  let score = 0;
+  let timeUp = null;
 
-  // 老鼠狀態
+  // 老鼠狀態資料製作
   const state = moles.reduce((pre , next , idx)=>{
     pre[idx] = false;
     return pre;
   }, {})
   console.log(state); // {0: false, 1: false, ...}
-
-
   let molesProxy = new Proxy(state , {
     get(target , key){
       return target[key];
     },
     set(target , key , value){
       target[key] = value;
+      // 如果老鼠狀態是true
       if (value) {
-        moles[key].addEventListener("click", clickHandler);
         moles[key].classList.add("up");
+        moles[key].addEventListener("click", clickHandler);
       } else {
         moles[key].classList.remove("up");
       }
     }
   });
-
-
   /* 
   防呆 點擊老鼠獲得分數  
   資料驅動畫面可防止 直接添加class 來點擊
@@ -77,24 +74,41 @@
       molesProxy[idx] = false;
     }
   };
-
-
   const setStore = function (s){
     score = s;
     scoreBoard.textContent = score;
   };
+  const randomRender = function () {
+    // 老鼠的隨機編號
+    const mole = Math.floor(Math.random() * moles.length);
+    // 老鼠的隨機時間
+    // Math.random()* (最大值 - 最小值 + 1 ) + 最小值 
+    const time = Math.floor(Math.random() * (1500 - 1000) + 1000); // 1000~1500
+    // console.log(mole);
+    // console.log(time);
 
-
-  // 多看幾次 有點不是很懂這段邏輯
-  const getRender = function () {
-
+    // 遞迴 如果老鼠已經true 重新再檢查別的老鼠 直到找到false
+    if (molesProxy[mole]) return randomRender();
+    molesProxy[mole] = true;
+    setMole(mole , time);
   }
-
-
+  const setMole = function(mole, time) {
+    // 第一隻時間結束消失
+    setTimeout(() => {
+      molesProxy[mole] = false;
+    }, time);
+    // 第二隻老鼠 在一半時間出現
+    setTimeout(() => {
+    if (timeUp === false) randomRender();
+    }, time / 2);
+  };
   const startGame = function () {
+    // 防止２次點擊
+    if(timeUp === false) return;
+    // 初始化歸零
     setStore(0);
     timeUp = false;
-    getRender();
+    randomRender();
     setTimeout(() =>{
       timeUp = true;
       alert("Time up")
