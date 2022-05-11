@@ -13,7 +13,69 @@
   html, body {
     margin: 0;
   }
+  canvas{
+    border: 1px solid;
+  }
 </style>
+<script>
+  (function(){
+    const canvas = document.querySelector('#draw');
+    let drawing = false;
+    let x = 0 , y= 0;
+    let colorDeg = 0;
+    let lineWidth = 50;
+    let direction = -1;
+    let ctx = canvas.getContext('2d');
+    // 筆觸顏色
+    ctx.strokeStyle = `hsl(${colorDeg} , 100% , 50%)`;
+    // 線條的粗細
+    ctx.lineWidth = lineWidth;
+    // 線的頂點
+    ctx.lineCap = 'round';
+    // 線的轉折角
+    ctx.lineJoin = 'round';
 
+
+    draw.addEventListener('mousedown', function(e){
+      drawing = true;
+      [x , y] = [e.offsetX, e.offsetY];
+      // console.log("開始路徑" , x , y);
+    })
+    draw.addEventListener('mousemove', function(e){
+      if(!drawing) return;
+      // console.log(`draw`);
+
+      ctx.beginPath();
+      ctx.moveTo(x, y);// 開始路徑
+      ctx.lineTo(e.offsetX, e.offsetY);// 結束路徑
+      // 把新的路徑一直覆蓋更新到最新的點上 如此才能一直畫下去
+      [x , y] = [e.offsetX, e.offsetY];
+
+
+      colorDeg =  colorDeg <  360 ? colorDeg + 1 : 0 ;
+      ctx.strokeStyle = `hsl(${colorDeg} , 100% , 50%)`;
+
+
+      if(lineWidth < 1 || lineWidth > 50){
+        direction *= -1;
+      }
+      lineWidth += direction;
+
+      console.log(lineWidth);
+
+
+
+      ctx.lineWidth = lineWidth;
+      // 畫線
+      ctx.stroke();
+    })
+    draw.addEventListener('mouseup', function(e){
+      drawing = false;
+    })
+    draw.addEventListener('mouseleave', function(e){
+      drawing = false;
+    })
+  })();
+</script>
 </body>
 </html>
