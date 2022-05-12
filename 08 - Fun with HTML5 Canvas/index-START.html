@@ -6,6 +6,7 @@
 </head>
 <body>
 <canvas id="draw" width="800" height="800"></canvas>
+<button type="button" class="btn">清除</button>
 <script>
 </script>
 
@@ -20,14 +21,21 @@
 <script>
   (function(){
     const canvas = document.querySelector('#draw');
+    const btn = document.querySelector('.btn');
     let drawing = false;
+    let down = false;
     let x = 0 , y= 0;
     let colorDeg = 0;
     let lineWidth = 50;
-    let direction = -1;
+    let direction = 1;
+    let alpha = 1;
+    let alphaDirection = 0.1;
     let ctx = canvas.getContext('2d');
+    let imageData = null;
+    let canvasAry = [];
+
     // 筆觸顏色
-    ctx.strokeStyle = `hsl(${colorDeg} , 100% , 50%)`;
+    ctx.strokeStyle = `hsla(${colorDeg} , 100% , 0% , ${alpha})`;
     // 線條的粗細
     ctx.lineWidth = lineWidth;
     // 線的頂點
@@ -35,14 +43,14 @@
     // 線的轉折角
     ctx.lineJoin = 'round';
 
-
     draw.addEventListener('mousedown', function(e){
       drawing = true;
+      down = true;
       [x , y] = [e.offsetX, e.offsetY];
       // console.log("開始路徑" , x , y);
     })
     draw.addEventListener('mousemove', function(e){
-      if(!drawing) return;
+      if(!drawing || !down) return;
       // console.log(`draw`);
 
       ctx.beginPath();
@@ -51,29 +59,53 @@
       // 把新的路徑一直覆蓋更新到最新的點上 如此才能一直畫下去
       [x , y] = [e.offsetX, e.offsetY];
 
-
+      // 角度色彩
       colorDeg =  colorDeg <  360 ? colorDeg + 1 : 0 ;
-      ctx.strokeStyle = `hsl(${colorDeg} , 100% , 50%)`;
-
-
-      if(lineWidth < 1 || lineWidth > 50){
-        direction *= -1;
+      ctx.strokeStyle = `hsla(${colorDeg} , 100% , 0% , ${alpha})`;
+      // 透明度
+      if( alpha >= 1 || alpha < 0.2 ){
+        alphaDirection *= -1;
+      }
+      alpha += alphaDirection;
+      // 粗細
+      if(lineWidth >= 50 || lineWidth < 10 ){
+        direction *= -1; 
       }
       lineWidth += direction;
-
-      console.log(lineWidth);
-
-
-
       ctx.lineWidth = lineWidth;
+      // console.log('alpha' , alpha);
+      // console.log('lineWidth' , lineWidth);
+
       // 畫線
       ctx.stroke();
+
+      // 清除 未完成
+      imageData = ctx.getImageData(x, y, 800, 800);
     })
-    draw.addEventListener('mouseup', function(e){
+    document.addEventListener('mouseup', function(e){
       drawing = false;
+      down = false;
+
+      // 清除 未完成
+      if(imageData === null) return;
+      canvasAry.push(imageData.data);
+      console.log(canvasAry);
     })
     draw.addEventListener('mouseleave', function(e){
       drawing = false;
+    })
+    draw.addEventListener('mouseenter', function(e){
+      drawing = true;
+      [x , y] = [e.offsetX, e.offsetY];
+    })
+    // 清除 未完成
+    btn.addEventListener('click' , function(e){
+      if(imageData === null) return;
+      let w = canvas.width;
+      let h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+      canvasAry.shift();
+      console.log(canvasAry);
     })
   })();
 </script>
