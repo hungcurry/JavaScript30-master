@@ -9,13 +9,6 @@
   <div class="words" contenteditable>
   </div>
 
-<script>
-  window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-
-
-</script>
-
-
   <style>
     html {
       font-size: 10px;
@@ -58,4 +51,36 @@
   </style>
 
 </body>
+<script>
+  // 判斷有無存在 SpeechRecognition
+  window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  const recognition = new SpeechRecognition();
+  recognition.interimResults = false; // 判斷連續回傳true 或是 false一句話
+  recognition.lang = 'zh-TW'; // en-US
+  
+  let p = document.createElement('p');
+  const words = document.querySelector('.words');
+  words.appendChild(p);
+
+  recognition.addEventListener('result', e => {
+    console.log(e);
+
+    const transcript = Array.from(e.results)
+      .map(result => result[0])
+      .map(result => result.transcript)
+      .join('');
+
+      const poopScript = transcript.replace(/poop|poo|shit|dump/gi, '💩');
+      p.textContent = poopScript;
+
+      if (e.results[0].isFinal) {
+        p = document.createElement('p');
+        words.appendChild(p);
+      }
+  });
+  // 當語音識別服務斷開連接時觸發
+  recognition.addEventListener('end', recognition.start);
+  recognition.start(); // 啟動
+</script>
 </html>
