@@ -10,7 +10,7 @@
   <div class="photobooth">
     <div class="controls">
       <button onClick="takePhoto()">Take Photo</button>
-<!--       <div class="rgb">
+      <div class="rgb">
         <label for="rmin">Red Min:</label>
         <input type="range" min=0 max=255 name="rmin">
         <label for="rmax">Red Max:</label>
@@ -29,7 +29,7 @@
         <input type="range" min=0 max=255 name="bmin">
         <label for="bmax">Blue Max:</label>
         <input type="range" min=0 max=255 name="bmax">
-      </div> -->
+      </div>
     </div>
 
     <canvas class="photo"></canvas>
@@ -38,8 +38,142 @@
   </div>
 
   <audio class="snap" src="./snap.mp3" hidden></audio>
+  <script>
+    (function(){
+      const video = document.querySelector('.player');
+      const canvas = document.querySelector('.photo');
+      const ctx = canvas.getContext('2d');
+      const strip = document.querySelector('.strip');
+      const snap = document.querySelector('.snap');
 
-  <script src="scripts.js"></script>
+      function getVideo() {
+        navigator.mediaDevices.getUserMedia({ video: true, audio: false })
+          .then(localMediaStream => {
+            console.log(localMediaStream);
+          
+      //  DEPRECIATION : 
+      // The following has been depreceated by major browsers as of Chrome and Firefox.
+      // video.src = window.URL.createObjectURL(localMediaStream);
+      // Please refer to these:
+      // Deprecated  - https://developer.mozilla.org/en-US/docs/Web/API/URL/createObjectURL
+      // Newer Syntax - https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/srcObject
+            
+            // 播放
+            video.srcObject = localMediaStream;
+            video.play();
+          })
+          .catch(err => {
+            console.error(`OH NO!!!`, err);
+          });
+      }
 
+      function paintToCanvas() {
+        const width = video.videoWidth;
+        const height = video.videoHeight;
+        canvas.width = width;
+        canvas.height = height;
+        let type = 2;
+
+        // width = 300 ,height = 200 Area = 300 * 200 = 60000
+        // 先畫才能拿到圖片像素
+        ctx.drawImage(video, 0, 0, width, height);
+        let pixels = ctx.getImageData(0 , 0 , width, height);
+        console.log(`pixels` , pixels);
+        // 一個點會被拆４個RGBA , 像素點 會是面積的４倍
+        console.log(`Area: ${width * height} , Pixels: ${pixels.data.length}`);
+
+        // 點
+        console.log('第一個點' , pixels.data[0] , pixels.data[1] , pixels.data[2] , pixels.data[3]);
+        console.log('第二個點' , pixels.data[0 + 4] , pixels.data[1 + 4] , pixels.data[2 + 4] , pixels.data[3 + 4]);
+
+
+        return setInterval(() => {
+          // 畫多寬多高
+          ctx.drawImage(video, 0, 0, width, height);
+          let pixels = ctx.getImageData(0, 0, width, height);
+          // mess with them
+          switch (type) {
+            case 1:
+              pixels = redEffect(pixels); // 紅色效果
+              break;
+            case 2:
+              pixels = rgbSplit(pixels);
+              break;
+            case 3:
+              pixels = greenScreen(pixels);
+              break;
+          }
+          ctx.putImageData(pixels, 0, 0);
+        }, 16);
+      }
+
+      // 照相
+      function takePhoto() {
+        // played the sound
+        snap.currentTime = 0;
+        snap.play();
+
+        // take the data out of the canvas
+        const data = canvas.toDataURL('image/jpeg');
+        const link = document.createElement('a');
+        link.href = data;
+        link.setAttribute('download', 'handsome');
+        link.innerHTML = `<img src="${data}" alt="Handsome Man" />`;
+        strip.insertBefore(link, strip.firstChild);
+      }
+
+      // 調色
+      function redEffect(pixels) {
+        // 一個點會被拆４個RGBA 4個一組
+        for (let i = 0; i < pixels.data.length; i+=4) {
+          pixels.data[i + 0] = pixels.data[i + 0] + 200; // RED
+          pixels.data[i + 1] = pixels.data[i + 1] - 50; // GREEN
+          pixels.data[i + 2] = pixels.data[i + 2] * 0.5; // Blue
+        }
+        return pixels;
+      }
+
+      // 色版分離
+      function rgbSplit(pixels) {
+        for (let i = 0; i < pixels.data.length; i+=4) {
+          pixels.data[i - 150] = pixels.data[i + 0]; // RED
+          pixels.data[i + 500] = pixels.data[i + 1]; // GREEN
+          pixels.data[i - 550] = pixels.data[i + 2]; // Blue
+        }
+        return pixels;
+      }
+
+      // 去背
+      function greenScreen(pixels) {
+        const levels = {};
+
+        document.querySelectorAll('.rgb input').forEach((input) => {
+          levels[input.name] = input.value;
+        });
+
+        for (i = 0; i < pixels.data.length; i = i + 4) {
+          red = pixels.data[i + 0];
+          green = pixels.data[i + 1];
+          blue = pixels.data[i + 2];
+          alpha = pixels.data[i + 3];
+
+          if (red >= levels.rmin
+            && green >= levels.gmin
+            && blue >= levels.bmin
+            && red <= levels.rmax
+            && green <= levels.gmax
+            && blue <= levels.bmax) {
+            // take it out!
+            pixels.data[i + 3] = 0; // 透明度０ 也就是去背
+          }
+        }
+
+        return pixels;
+      }
+
+      getVideo();
+      video.addEventListener('canplay', paintToCanvas);
+    })();
+  </script>
 </body>
 </html>
